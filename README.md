@@ -1,5 +1,5 @@
 # Conformal Stochastic Model Predictive Control for Grid-Scale Energy Arbitrage
-
+# *Datathon FME 2026*
 **Team `aniMLs` — UPC Sustainable Campus Energy Optimization Challenge (2026)**  
 *2nd Place Overall (Tied Causal Frontier) in Standard Regime (`6.44 pts`) · Top Tier in Hard Stochastic Regime (`23.40 pts`) · **Zero Risk Violations***
 
