@@ -31,7 +31,7 @@ Using offline hindsight Linear Programming (168h full-week oracle), we establish
 
 ## Exploratory Market & Load Structure
 
-![Campus Load, Solar Generation, and PVPC/CO2 Arbitrage Regimes](eda_resum.jpg)
+![Campus Load, Solar Generation, and PVPC/CO2 Arbitrage Regimes](eda.png)
 
 * **Midday Solar Valley (`10:00–16:00`):** Simultaneous trough in grid carbon intensity ($\approx 0.052\text{ kg CO}_2/\text{kWh}$) and spot PVPC price, establishing the optimal charging window.
 * **Evening Peak (`19:00–22:00`):** Coincident surge in marginal emissions ($\approx 0.110\text{ kg CO}_2/\text{kWh}$) and electricity price ($\approx €0.235/\text{kWh}$), exceeding the $11.11\%$ round-trip friction hurdle ($1/\eta_{\text{rt}} - 1$).
