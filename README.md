@@ -33,22 +33,22 @@ Using offline hindsight Linear Programming ($168\text{h}$ full-week oracle), we 
 
 ### 1. Piecewise-Linear Net Load & Asymmetric Payoffs
 At each hourly step $t$, let $d_t = L_t - P^{\text{PV}}_t$ denote net campus load, $u^+_t, u^-_t \in [0, P_{\max}]$ denote charging and discharging power, and $g_t, x_t \ge 0$ denote grid import and zero-remuneration export. Power balance enforces:
-$$g_t - x_t - u^+_t + u^-_t = d_t$$
+$g_t - x_t - u^+_t + u^-_t = d_t$
 
 State-of-Charge ($\text{SoC}_t \in [0, C_{\max}]$) evolves under symmetric one-way efficiencies $\eta_c = \eta_d = \sqrt{0.90} \approx 0.9487$:
-$$\text{SoC}_{t+1} = \text{SoC}_t + \eta_c u^+_t - \frac{1}{\eta_d} u^-_t$$
+$\text{SoC}_{t+1} = \text{SoC}_t + \eta_c u^+_t - \frac{1}{\eta_d} u^-_t$
 
 The unified marginal cost $c_t$ aligns directly with the competition's normalized objective ($70\%$ carbon intensity, $30\%$ PVPC spot price):
-$$c_t = 0.70 \frac{\text{CO}_{2,t}}{\text{CO}_{2,\text{ref}}} + 0.30 \frac{P_t}{P_{\text{ref}}}$$
+$c_t = 0.70 \frac{\text{CO}_{2,t}}{\text{CO}_{2,\text{ref}}} + 0.30 \frac{P_t}{P_{\text{ref}}}$
 
 ### 2. Conformal Stochastic MPC (Hard Regime)
 In the Hard Regime, solar generation is scaled by $12\times$ and market forecasts beyond $t+2$ are unobserved. Discharging beyond actual net demand ($u^-_t > d_t$) spills energy to the grid at zero value—an asymmetric **newsvendor** payoff[cite: 2].
 
 We model net load uncertainty across $H = 24$ steps using $S$ empirical error quantiles $E_{h,s}$ conditioned on hour-of-day ($q_{\text{hod}}$)[cite: 2], dynamically rescaled online via an adaptive conformal volatility multiplier $\nu_t \in [0.3, 3.0]$[cite: 2]:
-$$\nu_{t+1} = \text{clip}\left((1 - \alpha)\nu_t + \alpha \frac{\vert{}d^{\text{real}}_t - \hat{d}_t\vert{}}{\bar{\epsilon}_{\text{typ}}(h_t)},\; 0.3,\; 3.0\right)$$
+$\nu_{t+1} = \text{clip}\left((1 - \alpha)\nu_t + \alpha \frac{\vert{}d^{\text{real}}_t - \hat{d}_t\vert{}}{\bar{\epsilon}_{\text{typ}}(h_t)},\; 0.3,\; 3.0\right)$
 
 The Stochastic LP minimizes expected grid import cost plus terminal inventory shadow value $V_{\text{term}} = \eta_d \, Q_{0.5}(c_{1:H})$[cite: 2]:
-$$\min_{u^+, u^-, g \ge 0} \; \sum_{h=1}^{H} c_h \sum_{s=1}^{S} w_s \, g_{h,s} - V_{\text{term}} \, \text{SoC}_H \quad \text{s.t.} \quad g_{h,s} \ge \hat{d}_h + \nu_t E_{h,s} + u^+_h - u^-_h$$
+$\min_{u^+, u^-, g \ge 0} \; \sum_{h=1}^{H} c_h \sum_{s=1}^{S} w_s \, g_{h,s} - V_{\text{term}} \, \text{SoC}_H \quad \text{s.t.} \quad g_{h,s} \ge \hat{d}_h + \nu_t E_{h,s} + u^+_h - u^-_h$
 
 ### 3. Grey-Box Forecasting & Latency-Bounded Execution
 * **Physics + Residual ML:** Solar generation is decomposed into clear-sky astronomical irradiance (`cos_zenith` at $41.39^\circ\text{N}$) multiplied by an exponentially decaying clearness index $k_t$, refined via residual XGBoost / Scikit-Learn regressors[cite: 2].
